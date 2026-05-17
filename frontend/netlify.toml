@@ -1,3 +1,15 @@
+# --- Production API Proxy ---
+# Netlify proxies /api/* to the EC2 backend internally (server-to-server).
+# The browser sees only HTTPS requests to the same origin — no Mixed Content.
+# The :splat captures everything after /api/ and forwards it as-is.
+[[redirects]]
+  from = "/api/*"
+  to = "http://13.53.134.70:8080/:splat"
+  status = 200
+  force = true
+
+# --- SPA Fallback ---
+# Must come AFTER the /api/* proxy so it only catches true client-side routes.
 [[redirects]]
   from = "/*"
   to = "/index.html"
