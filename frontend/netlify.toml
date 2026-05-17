@@ -4,7 +4,7 @@
 # The :splat captures everything after /api/ and forwards it as-is.
 [[redirects]]
   from = "/api/*"
-  to = "http://13.53.134.70:8080/:splat"
+  to = "http://13.53.134.70/:splat"
   status = 200
   force = true
 
