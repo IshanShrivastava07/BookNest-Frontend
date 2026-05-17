@@ -1,0 +1,10 @@
+:root {
+  --color-bg: #FDFBF7;
+  --color-text: #1A1A1A;
+  --color-gold: #D4AF37;
+  --color-secondary: #F5F5F5;
+  --color-white: #FFFFFF;
+  --color-error: #EF4444;
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Playfair Display', serif;
+}
