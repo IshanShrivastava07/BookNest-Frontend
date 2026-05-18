@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import api from '../services/axios';
+import { useAuth } from './AuthContext';
 
 export interface WishlistItem {
   itemId: number;
@@ -23,6 +24,7 @@ interface WishlistContextType {
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
 
 export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isAuthenticated } = useAuth();
   const [items, setItems] = useState<WishlistItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -47,10 +49,10 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   }, []);
 
-  // Sync wishlist on mount and token changes
+  // Sync wishlist on mount and whenever authentication status changes (login/logout)
   useEffect(() => {
     refreshWishlist();
-  }, [refreshWishlist]);
+  }, [refreshWishlist, isAuthenticated]);
 
   // High-speed lookup for Heart visual active states
   const isInWishlist = useCallback((bookId: number) => {
