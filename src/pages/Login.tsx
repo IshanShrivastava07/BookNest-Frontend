@@ -86,8 +86,13 @@ const Login = () => {
           </div>
 
           <div className="input-group">
-            <label className="input-label">Password</label>
-            <div style={{ position: 'relative' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <label className="input-label" style={{ marginBottom: 0 }}>Password</label>
+                <Link to="/forgot-password" style={{ fontSize: '0.875rem', color: '#D4AF37', textDecoration: 'none', fontWeight: 500 }}>
+                    Forgot password?
+                </Link>
+            </div>
+            <div style={{ position: 'relative', marginTop: '0.5rem' }}>
               <div style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#9CA3AF' }}>
                 <Lock size={18} />
               </div>

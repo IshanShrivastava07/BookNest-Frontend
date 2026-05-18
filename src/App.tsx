@@ -21,6 +21,8 @@ import Notifications from './pages/Notifications';
 import Reviews from './pages/Reviews';
 import ManageBooks from './pages/ManageBooks';
 import ManageOrders from './pages/ManageOrders';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import './styles/global.css';
 import './styles/components.css';
 
@@ -32,6 +34,8 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/oauth-success" element={<OAuthSuccess />} />
 
             <Route element={<ProtectedRoute />}>
