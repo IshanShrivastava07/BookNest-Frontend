@@ -1,8 +1,8 @@
 import { ShoppingCart, Check, Heart } from 'lucide-react';
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 import { motion } from 'framer-motion';
-import api from '../services/axios';
 
 interface BookCardProps {
   bookId: number;
@@ -16,6 +16,7 @@ interface BookCardProps {
 
 const BookCard = ({ bookId, title, author, genre, price, stock, coverImage }: BookCardProps) => {
   const { addToCart } = useCart();
+  const { isInWishlist, toggleWishlist } = useWishlist();
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
   const [wishLoading, setWishLoading] = useState(false);
@@ -23,9 +24,9 @@ const BookCard = ({ bookId, title, author, genre, price, stock, coverImage }: Bo
   const handleWishlist = async () => {
     setWishLoading(true);
     try {
-      await api.post(`/wishlist/add/${bookId}`);
+      await toggleWishlist({ bookId, title, author, coverImage, price, genre });
     } catch {
-      // duplicate / errors — optional toast
+      // Handled inside toggleWishlist
     } finally {
       setWishLoading(false);
     }
@@ -72,12 +73,21 @@ const BookCard = ({ bookId, title, author, genre, price, stock, coverImage }: Bo
               whileTap={{ scale: 0.9 }}
               type="button"
               className="btn-outline"
-              style={{ padding: '0.5rem 0.65rem', minWidth: 'auto' }}
+              style={{ 
+                padding: '0.5rem 0.65rem', 
+                minWidth: 'auto',
+                borderColor: isInWishlist(bookId) ? '#D4AF37' : 'var(--color-border)' 
+              }}
               onClick={handleWishlist}
               disabled={wishLoading}
-              title="Add to wishlist"
+              title={isInWishlist(bookId) ? "Remove from wishlist" : "Add to wishlist"}
             >
-              <Heart size={16} className={wishLoading ? 'animate-pulse' : ''} />
+              <Heart 
+                size={16} 
+                className={wishLoading ? 'animate-pulse' : ''} 
+                fill={isInWishlist(bookId) ? '#D4AF37' : 'none'}
+                stroke={isInWishlist(bookId) ? '#D4AF37' : 'currentColor'}
+              />
             </motion.button>
             <motion.button
               whileTap={{ scale: 0.95 }}
