@@ -1,14 +1,14 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useWishlist } from '../context/WishlistContext';
 import { useCart } from '../context/CartContext';
-import { getApiErrorMessage } from '../utils/apiError';
-import api from '../services/axios';
-import { Heart, ShoppingCart, Trash2 } from 'lucide-react';
+import { Heart, ShoppingCart, Trash2, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Wishlist = () => {
   const { items, loading, error, refreshWishlist, toggleWishlist } = useWishlist();
-  const { refreshCart } = useCart();
+  const { addToCart } = useCart();
+  const [addingToCart, setAddingToCart] = useState<Record<number, boolean>>({});
+  const [addedToCart, setAddedToCart] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
     refreshWishlist();
@@ -28,13 +28,20 @@ const Wishlist = () => {
     }
   };
 
-  const move = async (bookId: number) => {
+  const handleAddToCart = async (bookId: number, title: string, price: number) => {
+    setAddingToCart((prev) => ({ ...prev, [bookId]: true }));
     try {
-      await api.post(`/wishlist/move-to-cart/${bookId}`);
-      await refreshCart();
-      await refreshWishlist();
-    } catch (e: unknown) {
-      alert(getApiErrorMessage(e, 'Could not move to cart.'));
+      await addToCart({ bookId, title, price });
+      // Show brief success tick on the button
+      setAddedToCart((prev) => ({ ...prev, [bookId]: true }));
+      setTimeout(() => {
+        setAddedToCart((prev) => ({ ...prev, [bookId]: false }));
+      }, 1500);
+    } catch (err) {
+      console.error('[WishlistPage] Failed to add to cart:', err);
+      alert('Could not add to cart. Please try again.');
+    } finally {
+      setAddingToCart((prev) => ({ ...prev, [bookId]: false }));
     }
   };
 
@@ -89,11 +96,12 @@ const Wishlist = () => {
                   <button 
                     type="button" 
                     className="btn-outline" 
-                    onClick={() => move(item.bookId)} 
-                    title="Move to cart"
+                    onClick={() => handleAddToCart(item.bookId, item.bookTitle, item.price)} 
+                    disabled={addingToCart[item.bookId]}
+                    title={addedToCart[item.bookId] ? 'Added to cart!' : 'Add to cart'}
                     style={{ padding: '0.5rem 0.65rem', minWidth: 'auto' }}
                   >
-                    <ShoppingCart size={16} />
+                    {addedToCart[item.bookId] ? <Check size={16} /> : <ShoppingCart size={16} />}
                   </button>
                   <button 
                     type="button" 
